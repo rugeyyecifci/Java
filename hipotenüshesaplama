@@ -1,0 +1,20 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("birinci kenarı giriniz");
+        int a = scan.nextInt();
+
+        System.out.println("ikinci kenarı giriniz");
+        int b = scan.nextInt();
+
+        // formülümüz birincideger*birincideger+ikincideger*ikincideger=hipotenüs*hipotenüs
+
+        double c = Math.sqrt((a*a)+(b*b));
+
+        System.out.println("hipotenüs değeri:"+c);
+
+
+    }
+}
