@@ -1,0 +1,60 @@
+
+class Kisi {
+    protected String ad;
+    protected int yas;
+    
+    public Kisi(String ad, int yas) {
+        this.ad = ad;
+        this.yas = yas;
+    }
+    
+    public void bilgileriGoster() {
+      System.out.println("Ad: " + ad + ", Yaş: " + yas);
+    }
+}
+
+
+class Ogrenci extends Kisi {
+    private String ogrenciNo;
+    
+    public Ogrenci(String ad, int yas, String ogrenciNo) {
+        super(ad, yas);
+        this.ogrenciNo = ogrenciNo;
+    }
+    
+    
+    @Override
+    public void bilgileriGoster() {
+        super.bilgileriGoster();
+        System.out.println("Öğrenci No: " + ogrenciNo);
+    }
+}
+
+class Ogretmen extends Kisi {
+    private String brans;
+    
+    public Ogretmen(String ad, int yas, String brans) {
+        super(ad, yas);
+        this.brans = brans;
+    }
+    
+    @Override
+    public void bilgileriGoster() {
+        super.bilgileriGoster();
+        System.out.println("Branş: " + brans);
+    }
+}
+
+
+public class Main {
+    public static void main(String[] args) {
+        Ogrenci ogr1 = new Ogrenci("Ahmet", 20, "12345");
+        Ogretmen ogrt1 = new Ogretmen("Mehmet", 40, "Matematik");
+        
+        System.out.println("Öğrenci Bilgileri");
+        ogr1.bilgileriGoster();
+        
+        System.out.println(" Öğretmen Bilgileri");
+        ogrt1.bilgileriGoster();
+    }
+}
