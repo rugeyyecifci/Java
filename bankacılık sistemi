@@ -1,0 +1,156 @@
+// Account.java
+public class Account {
+    private String accountNumber;
+    private String accountHolder;
+    private double balance;
+
+    public Account(String accountNumber, String accountHolder, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+        this.balance = initialBalance;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public String getAccountHolder() {
+        return accountHolder;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println(amount + " has been deposited. New balance: " + balance);
+        } else {
+            System.out.println("Invalid deposit amount.");
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            System.out.println(amount + " has been withdrawn. New balance: " + balance);
+        } else {
+            System.out.println("Insufficient funds or invalid amount.");
+        }
+    }
+}
+
+// Bank.java
+import java.util.HashMap;
+
+public class Bank {
+    private HashMap<String, Account> accounts;
+
+    public Bank() {
+        accounts = new HashMap<>();
+    }
+
+    public void addAccount(Account account) {
+        accounts.put(account.getAccountNumber(), account);
+    }
+
+    public Account getAccount(String accountNumber) {
+        return accounts.get(accountNumber);
+    }
+
+    public void transfer(String fromAccountNumber, String toAccountNumber, double amount) {
+        Account fromAccount = getAccount(fromAccountNumber);
+        Account toAccount = getAccount(toAccountNumber);
+
+        if (fromAccount != null && toAccount != null) {
+            if (fromAccount.getBalance() >= amount) {
+                fromAccount.withdraw(amount);
+                toAccount.deposit(amount);
+                System.out.println("Transferred " + amount + " from " + fromAccountNumber + " to " + toAccountNumber);
+            } else {
+                System.out.println("Insufficient funds for transfer.");
+            }
+        } else {
+            System.out.println("Account not found.");
+        }
+    }
+}
+
+// BankingSystem.java
+import java.util.Scanner;
+
+public class BankingSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Bank bank = new Bank();
+
+        // Creating test accounts
+        Account account1 = new Account("12345", "Alice", 1000);
+        Account account2 = new Account("67890", "Bob", 500);
+        bank.addAccount(account1);
+        bank.addAccount(account2);
+
+        System.out.println("Welcome to the Banking System!");
+        
+        while (true) {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. Deposit");
+            System.out.println("2. Withdraw");
+            System.out.println("3. Transfer");
+            System.out.println("4. Check Balance");
+            System.out.println("5. Exit");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // consume newline
+
+            if (choice == 1) {
+                System.out.print("Enter account number: ");
+                String accountNumber = scanner.nextLine();
+                System.out.print("Enter amount to deposit: ");
+                double amount = scanner.nextDouble();
+                Account account = bank.getAccount(accountNumber);
+                if (account != null) {
+                    account.deposit(amount);
+                } else {
+                    System.out.println("Account not found.");
+                }
+            } else if (choice == 2) {
+                System.out.print("Enter account number: ");
+                String accountNumber = scanner.nextLine();
+                System.out.print("Enter amount to withdraw: ");
+                double amount = scanner.nextDouble();
+                Account account = bank.getAccount(accountNumber);
+                if (account != null) {
+                    account.withdraw(amount);
+                } else {
+                    System.out.println("Account not found.");
+                }
+            } else if (choice == 3) {
+                System.out.print("Enter from account number: ");
+                String fromAccount = scanner.nextLine();
+                System.out.print("Enter to account number: ");
+                String toAccount = scanner.nextLine();
+                System.out.print("Enter amount to transfer: ");
+                double amount = scanner.nextDouble();
+                bank.transfer(fromAccount, toAccount, amount);
+            } else if (choice == 4) {
+                System.out.print("Enter account number: ");
+                String accountNumber = scanner.nextLine();
+                Account account = bank.getAccount(accountNumber);
+                if (account != null) {
+                    System.out.println("Balance: " + account.getBalance());
+                } else {
+                    System.out.println("Account not found.");
+                }
+            } else if (choice == 5) {
+                System.out.println("Goodbye!");
+                break;
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+            }
+        }
+
+        scanner.close();
+    }
+}
