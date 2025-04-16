@@ -1,0 +1,26 @@
+// SesCikarabilir interface i
+interface SesCikarabilir {
+    void sesCikar(); 
+}
+
+class Kedi implements SesCikarabilir {
+    public void sesCikar() {
+        System.out.println("Miyav!");
+    }
+}
+
+class Kopek implements SesCikarabilir {
+    public void sesCikar() {
+        System.out.println("Hav hav!");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        SesCikarabilir kedi = new Kedi();
+        SesCikarabilir kopek = new Kopek();
+
+        kedi.sesCikar(); 
+        kopek.sesCikar();
+    }
+}
