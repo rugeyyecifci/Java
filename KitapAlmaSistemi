@@ -1,0 +1,145 @@
+package main;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Kitap ödünç alınabilen nesneler için bir arayüz
+interface OduncAlabilir {
+    void oduncAl(String kullaniciAdi);
+    void iadeEt();
+}
+
+// Kitap sınıfı, tüm kitap türlerinin ortak özelliklerini barındırır
+abstract class Kitap {
+    protected String ad;
+    protected String yazar;
+    protected String isbn;
+
+    public Kitap(String ad, String yazar, String isbn) {
+        this.ad = ad;
+        this.yazar = yazar;
+        this.isbn = isbn;
+    }
+
+    // Kitap bilgilerini gösteren soyut metod
+    public abstract void kitapBilgisiGoster();
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public String getAd() {
+        return ad;
+    }
+}
+
+// Roman sınıfı, Kitap sınıfından türemektedir ve ödünç alabilen kitapları temsil eder
+class Roman extends Kitap implements OduncAlabilir {
+    private boolean oduncDurumu = false;
+
+    public Roman(String ad, String yazar, String isbn) {
+        super(ad, yazar, isbn);
+    }
+
+    @Override
+    public void kitapBilgisiGoster() {
+        System.out.println("[ROMAN] " + ad + " - " + yazar + " | ISBN: " + isbn);
+    }
+
+    @Override
+    public void oduncAl(String kullaniciAdi) {
+        if (!oduncDurumu) {
+            System.out.println(kullaniciAdi + " romanı ödünç aldı: " + ad);
+            oduncDurumu = true;
+        } else {
+            System.out.println("Bu roman zaten ödünç alınmış.");
+        }
+    }
+
+    @Override
+    public void iadeEt() {
+        if (oduncDurumu) {
+            System.out.println(ad + " romanı iade edildi.");
+            oduncDurumu = false;
+        } else {
+            System.out.println("Bu roman zaten iade edilmiş.");
+        }
+    }
+}
+
+// DersKitabi sınıfı, yine Kitap sınıfından türetilir, fakat ders kitabı ödünç alma işlemi yapmaz
+class DersKitabi extends Kitap {
+    private String konu;
+
+    public DersKitabi(String ad, String yazar, String isbn, String konu) {
+        super(ad, yazar, isbn);
+        this.konu = konu;
+    }
+
+    @Override
+    public void kitapBilgisiGoster() {
+        System.out.println("[DERS KİTABI] " + ad + " - " + yazar + " | Konu: " + konu + " | ISBN: " + isbn);
+    }
+}
+
+// Kütüphane sınıfı, kitapları yönetir
+class Kutuphane {
+    private List<Kitap> kitaplar = new ArrayList<>();
+
+    // Yeni kitap ekler
+    public void kitapEkle(Kitap kitap) {
+        kitaplar.add(kitap);
+    }
+
+    // Kütüphanedeki tüm kitapları listeler
+    public void kitaplariListele() {
+        System.out.println("\n--- KÜTÜPHANE ENVANTERİ ---");
+        for (Kitap kitap : kitaplar) {
+            kitap.kitapBilgisiGoster();
+        }
+    }
+
+    // ISBN numarasına göre kitap arar
+    public Kitap kitapBul(String isbn) {
+        for (Kitap kitap : kitaplar) {
+            if (kitap.getIsbn().equals(isbn)) {
+                return kitap;
+            }
+        }
+        System.out.println("Kitap bulunamadı!");
+        return null;
+    }
+}
+
+// Main sınıfı, programın çalıştığı yerdir
+public class Main {
+    public static void main(String[] args) {
+        Kutuphane kutuphane = new Kutuphane();
+        Scanner scanner = new Scanner(System.in);
+
+        // Kitaplar oluşturuluyor
+        Roman r1 = new Roman("Suç ve Ceza", "Dostoyevski", "12345");
+        DersKitabi d1 = new DersKitabi("Algoritma", "Ahmet Kaya", "67890", "Programlama");
+
+        // Kitaplar kütüphaneye ekleniyor
+        kutuphane.kitapEkle(r1);
+        kutuphane.kitapEkle(d1);
+        kutuphane.kitaplariListele();
+
+        // Kullanıcıdan ISBN numarasını alıyoruz
+        System.out.print("\nISBN girin (ödünç almak için): ");
+        String isbn = scanner.nextLine();
+        Kitap secilen = kutuphane.kitapBul(isbn);
+
+        // Eğer kitap ödünç alınabiliyorsa, işlem yapılır
+        if (secilen instanceof OduncAlabilir) {
+            ((OduncAlabilir) secilen).oduncAl("Rugeyye");
+        } else {
+            System.out.println("Bu kitap ödünç alınamaz.");
+        }
+
+        scanner.close();
+    }
+}
+
