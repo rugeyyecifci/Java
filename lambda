@@ -1,0 +1,61 @@
+import java.util.*;
+import java.util.stream.Collectors;
+
+class Ogrenci {
+    String ad;
+    double ortalama;
+
+    public Ogrenci(String ad, double ortalama) {
+
+        this.ad = ad;
+        this.ortalama = ortalama;
+    }
+
+    public String getAd() {
+        return ad;
+    }
+
+    public double getOrtalama() {
+        return ortalama;
+    }
+}
+
+class OgrenciIslemleri {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Ogrenci> ogrenciler = new ArrayList<>();
+
+        System.out.print("Kaç öğrenci gireceksiniz? ");
+        int adet = scanner.nextInt();
+        scanner.nextLine(); // satır atlamak için
+
+        for (int i = 0; i < adet; i++) {
+            System.out.print((i + 1) + ". öğrencinin adı: ");
+            String ad = scanner.nextLine();
+
+            System.out.print((i + 1) + ". öğrencinin not ortalaması: ");
+            double ort = scanner.nextDouble();
+            scanner.nextLine();
+
+            ogrenciler.add(new Ogrenci(ad, ort));
+        }
+
+        // 3.0 ve üzeri ortalamalı
+        String basarili = ogrenciler.stream()
+                .filter(o -> o.getOrtalama() >= 3.0)
+                .map(Ogrenci::getAd)
+                .sorted()
+                .collect(Collectors.joining(", "));
+
+        // 3.0 altı ortalaması
+        double dusukOrt = ogrenciler.stream()
+                .filter(o -> o.getOrtalama() < 3.0)
+                .mapToDouble(Ogrenci::getOrtalama)
+                .average()
+                .orElse(0.0);
+
+        System.out.println("\nBaşarılı Öğrenciler: " + basarili);
+        System.out.printf("Başarısızların Ortalama Notu: %.2f\n", dusukOrt);
+    }
+}
+
